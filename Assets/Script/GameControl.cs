@@ -25,7 +25,7 @@ public class GameControl : MonoBehaviour
     public float spawnTime = 9.0f;
     public float maxSpawnTime = 10.0f;
 
-    public int highScore;
+    private int highScore;
     public int curScore;
 
     [SerializeField] Text highScoreText;
@@ -37,6 +37,7 @@ public class GameControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         gameSet = false;
         spawnRock = false;
         round = 1;
@@ -45,9 +46,14 @@ public class GameControl : MonoBehaviour
         spawnCount = 0;
         UpdateRound();
         UpdateScore(0);
+        highScore = FBPP.GetInt("highscore");
+        UpdateHScore();
         endPanel.SetActive(false);
         Time.timeScale = 1;
         player.playerDied.AddListener(PlayerLose);
+
+
+
     }
 
     // Update is called once per frame
@@ -154,6 +160,9 @@ public class GameControl : MonoBehaviour
     void UpdateHScore()
     {
         highScoreText.text = "High Score: " + highScore;
+        FBPP.SetInt("highscore", highScore);
+        FBPP.Save();
+        //PlayerPrefs.Save();
     }
 
     void UpdateRound()
@@ -163,11 +172,14 @@ public class GameControl : MonoBehaviour
 
     public void Restart()
     {
+        //PlayerPrefs.Save();
         string currentSceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currentSceneName);
     }
     public void ExitGame()
     {
+        //PlayerPrefs.Save();
         Application.Quit();
     }
+
 }
